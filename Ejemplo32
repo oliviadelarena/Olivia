@@ -1,0 +1,32 @@
+int pirPin = 2; // Pin de entrada del sensor PIR
+int buzzerPin = 3; // Pin de salida del buzzer o sirena
+int pirState = LOW; // Estado inicial del sensor PIR
+int alarmDelay = 10000; // Tiempo de retardo para reiniciar la alarma (en milisegundos)
+unsigned long previousMillis = 0; // Variable para almacenar el tiempo transcurrido
+
+void setup() {
+  pinMode(pirPin, INPUT); // Configura el pin del sensor PIR como entrada
+  pinMode(buzzerPin, OUTPUT); // Configura el pin del buzzer o sirena como salida
+  Serial.begin(9600); // Inicia la comunicación serial (opcional)
+}
+
+void loop() {
+  // Lee el estado del sensor PIR
+  pirState = digitalRead(pirPin);
+
+  // Si se detecta movimiento, activa la alarma
+  if (pirState == HIGH) {
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= alarmDelay) {
+      activateAlarm();
+      previousMillis = currentMillis;
+    }
+  }
+}
+
+void activateAlarm() {
+  // Activa la alarma
+  digitalWrite(buzzerPin, HIGH);
+  delay(1000); // Duración de la alarma en milisegundos
+  digitalWrite(buzzerPin, LOW);
+}
