@@ -1,0 +1,46 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Dirección I2C de la pantalla LCD y configuración (16 columnas x 2 filas)
+
+const int buttonPinIncrement = 2;  // Pin del botón para incrementar el contador
+const int buttonPinDecrement = 3;  // Pin del botón para decrementar el contador
+
+int counter = 0;  // Variable para almacenar el valor del contador
+
+void setup() {
+  lcd.begin(16, 2);  // Inicializar la pantalla LCD
+  
+  pinMode(buttonPinIncrement, INPUT_PULLUP);  // Configurar el pin del botón como entrada con pull-up
+  pinMode(buttonPinDecrement, INPUT_PULLUP);  // Configurar el pin del botón como entrada con pull-up
+
+  lcd.setCursor(0, 0);
+  lcd.print("Contador: ");
+  lcd.setCursor(0, 1);
+  lcd.print(counter);
+}
+
+void loop() {
+  // Comprobar si se presiona el botón de incrementar
+  if (digitalRead(buttonPinIncrement) == LOW) {
+    delay(50);  // Retardo para evitar rebotes del botón
+    
+    counter++;  // Incrementar el contador
+    updateLCD();  // Actualizar la pantalla LCD con el nuevo valor del contador
+  }
+
+  // Comprobar si se presiona el botón de decrementar
+  if (digitalRead(buttonPinDecrement) == LOW) {
+    delay(50);  // Retardo para evitar rebotes del botón
+    
+    counter--;  // Decrementar el contador
+    updateLCD();  // Actualizar la pantalla LCD con el nuevo valor del contador
+  }
+}
+
+void updateLCD() {
+  lcd.setCursor(0, 1);
+  lcd.print("         ");  // Borrar el valor anterior del contador
+  lcd.setCursor(0, 1);
+  lcd.print(counter);  // Mostrar el nuevo valor del contador
+}
