@@ -1,0 +1,22 @@
+#include <Servo.h>
+
+const int sensorPin = 2;
+const int servoPin = 9;
+
+Servo servo;
+
+void setup() {
+  pinMode(sensorPin, INPUT);
+  servo.attach(servoPin);
+  servo.write(0); // Inicialmente, la puerta está cerrada
+}
+
+void loop() {
+  int sensorValue = digitalRead(sensorPin);
+
+  if (sensorValue == HIGH) {
+    servo.write(90); // Abre la puerta
+    delay(2000); // Espera 2 segundos
+    servo.write(0); // Cierra la puerta
+  }
+}
