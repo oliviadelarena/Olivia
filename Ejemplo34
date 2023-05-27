@@ -1,0 +1,73 @@
+#include <Servo.h>
+#include <Keypad.h>
+
+// Definir los pines de conexión del teclado numérico
+const byte filas = 4;
+const byte columnas = 4;
+char teclas[filas][columnas] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+byte pinFilas[filas] = {2, 3, 4, 5};      // Conecta las filas a los pines 2, 3, 4 y 5 del Arduino
+byte pinColumnas[columnas] = {6, 7, 8, 9}; // Conecta las columnas a los pines 6, 7, 8 y 9 del Arduino
+
+// Código de acceso a la caja fuerte
+char codigoAcceso[] = "1234";  // Cambia este código según tus necesidades
+char codigoIngresado[5];       // Variable para almacenar el código ingresado por el usuario
+byte indiceCodigo = 0;         // Índice del código ingresado por el usuario
+
+// Objeto para controlar el servo motor
+Servo servoMotor;
+int anguloApertura = 0;        // Ángulo de apertura de la caja fuerte
+int anguloCerrado = 90;        // Ángulo de cierre de la caja fuerte
+
+// Objeto para el teclado numérico
+Keypad keypad = Keypad(makeKeymap(teclas), pinFilas, pinColumnas, filas, columnas);
+
+void setup() {
+  // Inicializar el puerto serie
+  Serial.begin(9600);
+  
+  // Adjuntar el servo motor al pin 5
+  servoMotor.attach(5);
+  
+  // Establecer el servo en posición cerrada al inicio
+  servoMotor.write(anguloCerrado);
+}
+
+void loop() {
+  // Leer la tecla presionada
+  char tecla = keypad.getKey();
+  
+  // Verificar si se ha presionado una tecla
+  if (tecla) {
+    // Verificar si se ha ingresado el código completo
+    if (tecla == '#') {
+      // Comparar el código ingresado con el código de acceso
+      if (strcmp(codigoIngresado, codigoAcceso) == 0) {
+        // Abrir la caja fuerte
+        servoMotor.write(anguloApertura);
+        delay(2000); // Mantener la caja fuerte abierta durante 2 segundos
+        servoMotor.write(anguloCerrado); // Cerrar la caja fuerte nuevamente
+        Serial.println("Caja fuerte abierta");
+      } else {
+        // Código incorrecto, restablecer el código ingresado
+        Serial.println("Código incorrecto");
+      }
+      
+      // Restablecer el índice y el código ingresado
+      indiceCodigo = 0;
+      memset(codigoIngresado, 0, sizeof(codigoIngresado));
+    } else {
+      // Agregar la tecla ingresada al código
+      codigoIngresado[indiceCodigo] = tecla;
+      indiceCodigo++;
+      
+      // Mostrar la tecla ingresada por el usuario
+      Serial.print("Tecla ingresada: ");
+      Serial.println(tecla);
+    }
+  }
+}
