@@ -1,0 +1,17 @@
+int sensorPin = 2;   // Pin del sensor de movimiento
+int relayPin = 3;    // Pin de control del relé
+
+void setup() {
+  pinMode(sensorPin, INPUT);
+  pinMode(relayPin, OUTPUT);
+}
+
+void loop() {
+  int sensorValue = digitalRead(sensorPin);
+  
+  if (sensorValue == HIGH) {
+    digitalWrite(relayPin, HIGH);  // Enciende el relé
+  } else {
+    digitalWrite(relayPin, LOW);   // Apaga el relé
+  }
+}
