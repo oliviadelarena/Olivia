@@ -1,0 +1,37 @@
+const int hourPins[] = {2, 3, 4, 5, 6, 7};     // Pines de los LEDs de las horas
+const int minutePins[] = {8, 9, 10, 11, 12, 13}; // Pines de los LEDs de los minutos
+
+const int hourButtonPin = A0;   // Pin del botón pulsador para ajustar las horas
+const int minuteButtonPin = A1; // Pin del botón pulsador para ajustar los minutos
+
+int hours = 0;
+int minutes = 0;
+
+void setup() {
+  for (int i = 0; i < 6; i++) {
+    pinMode(hourPins[i], OUTPUT);
+    pinMode(minutePins[i], OUTPUT);
+  }
+  
+  pinMode(hourButtonPin, INPUT_PULLUP);
+  pinMode(minuteButtonPin, INPUT_PULLUP);
+}
+
+void loop() {
+  // Actualizar la hora y los minutos si se presionan los botones
+  if (digitalRead(hourButtonPin) == LOW) {
+    hours = (hours + 1) % 32;
+    delay(200); // Retardo para evitar el rebote del botón
+  }
+  
+  if (digitalRead(minuteButtonPin) == LOW) {
+    minutes = (minutes + 1) % 64;
+    delay(200); // Retardo para evitar el rebote del botón
+  }
+  
+  // Mostrar las horas y los minutos en formato binario
+  for (int i = 0; i < 6; i++) {
+    digitalWrite(hourPins[i], bitRead(hours, i));
+    digitalWrite(minutePins[i], bitRead(minutes, i));
+  }
+}
