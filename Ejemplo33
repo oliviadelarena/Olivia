@@ -1,0 +1,51 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Definir las constantes para la dirección y tamaño de la pantalla LCD
+const int LCD_ADDRESS = 0x27;
+const int LCD_COLS = 16;
+const int LCD_ROWS = 2;
+
+// Pin del sensor de infrarrojos
+const int IR_SENSOR_PIN = 2;
+
+// Variables globales
+int objetoContador = 0;
+bool objetoDetectado = false;
+
+// Crear un objeto para la pantalla LCD
+LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
+
+void setup() {
+  // Inicializar la comunicación serie
+  Serial.begin(9600);
+
+  // Inicializar la pantalla LCD
+  lcd.begin(LCD_COLS, LCD_ROWS);
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Contador: ");
+
+  // Configurar el pin del sensor de infrarrojos como entrada
+  pinMode(IR_SENSOR_PIN, INPUT);
+}
+
+void loop() {
+  // Leer el estado del sensor de infrarrojos
+  bool estadoSensor = digitalRead(IR_SENSOR_PIN);
+
+  if (estadoSensor == LOW && !objetoDetectado) {
+    // Si se detecta un objeto, incrementar el contador
+    objetoContador++;
+    objetoDetectado = true;
+    
+    // Actualizar la pantalla LCD con el nuevo contador
+    lcd.setCursor(10, 0);
+    lcd.print("     ");
+    lcd.setCursor(10, 0);
+    lcd.print(objetoContador);
+  } else if (estadoSensor == HIGH && objetoDetectado) {
+    // Reiniciar la detección de objeto
+    objetoDetectado = false;
+  }
+}
