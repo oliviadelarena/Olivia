@@ -1,0 +1,30 @@
+// Declaración de los pines de los sensores infrarrojos
+const int sensorIzquierdoPin = 2;
+const int sensorDerechoPin = 3;
+
+// Variables para almacenar los valores de los sensores
+int valorSensorIzquierdo;
+int valorSensorDerecho;
+
+void setup() {
+  // Inicialización de los pines de los sensores
+  pinMode(sensorIzquierdoPin, INPUT);
+  pinMode(sensorDerechoPin, INPUT);
+  
+  // Inicialización de la comunicación serial para depuración
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Leer los valores de los sensores
+  valorSensorIzquierdo = digitalRead(sensorIzquierdoPin);
+  valorSensorDerecho = digitalRead(sensorDerechoPin);
+  
+  // Mostrar los valores de los sensores por el puerto serial
+  Serial.print("Valor del sensor izquierdo: ");
+  Serial.println(valorSensorIzquierdo);
+  Serial.print("Valor del sensor derecho: ");
+  Serial.println(valorSensorDerecho);
+  
+  // Agrega aquí tu lógica de seguimiento de línea y control de motores
+}
